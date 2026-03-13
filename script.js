@@ -42,7 +42,7 @@ const POMODORO_TIMES = {
 };
 
 // Global Timer Engine State
-let currentMode = MODES.POMODORO;
+let currentMode = MODES.TIMER;
 let timerInterval = null;
 let isTimerRunning = false;
 let isTimerPaused = false;
@@ -60,8 +60,8 @@ let pomodoroState = {
 };
 
 let timerState = {
-    seconds: 25 * 60,
-    initialSeconds: 25 * 60
+    seconds: 30 * 60,
+    initialSeconds: 30 * 60
 };
 
 let stopwatchState = {
