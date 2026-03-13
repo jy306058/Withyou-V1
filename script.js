@@ -30,7 +30,7 @@ let state = {
         }
     ],
     tasks: [],
-    activeCategory: 'Work'
+    activeCategory: 'All'
 };
 
 let previewAudio = new Audio();
@@ -975,6 +975,7 @@ function saveProfile(index) {
 
     saveState();
     renderAll();
+    alert("프로필 저장이 완료되었습니다.");
     closeModals();
 }
 
