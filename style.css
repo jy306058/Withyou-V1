@@ -207,7 +207,7 @@ img {
 .timer__section {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px; /* Reduced from 20px */
     align-items: center; /* Center horizontally for all devices */
     width: 100%;
 }
@@ -219,7 +219,7 @@ img {
 
 @media (min-width: 768px) {
     .timer__section {
-        gap: 20px;
+        gap: 15px; /* Reduced from 20px */
     }
 }
 
@@ -335,7 +335,7 @@ img {
 /* Timer */
 .timer__container {
     background-color: transparent;
-    padding: 30px;
+    padding: 15px 30px 30px 30px; /* Reduced top padding from 30px to 15px */
     border-radius: var(--border-radius-lg);
     box-shadow: none;
     text-align: center;
@@ -502,7 +502,7 @@ img {
     display: flex;
     justify-content: center;
     gap: 18px;
-    margin-bottom: 25px; /* Pull checklist up */
+    margin-bottom: 10px; /* Reduced from 25px to pull checklist up */
 }
 
 .timer__controls .button {
