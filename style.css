@@ -594,12 +594,32 @@ img {
 /* Profiles Page */
 .page__header {
     margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .page__header-title {
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--text-primary);
+}
+
+.page__back-home {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    padding: 8px 16px;
+    border-radius: var(--border-radius-md);
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    transition: all 0.2s ease;
+}
+
+.page__back-home:hover {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+    background: var(--accent-soft);
 }
 
 .profile__grid {
