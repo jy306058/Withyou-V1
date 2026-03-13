@@ -151,6 +151,10 @@ function showOnboarding() {
     const charFile = document.getElementById('onboarding-character-file');
     const charNameInput = document.getElementById('onboarding-character-name');
     
+    // 강제로 초기 상태 설정
+    step1.style.display = 'flex';
+    stepWelcome.style.display = 'none';
+    step2.style.display = 'none';
     overlay.style.display = 'flex';
 
     // 최애 이미지 미리보기
@@ -201,16 +205,19 @@ function showOnboarding() {
         saveState();
         renderAll();
 
-        // 2. 환영 메시지 전환
+        // 2. 환영 메시지로 깔끔하게 전환
         step1.style.display = 'none';
         stepWelcome.style.display = 'flex';
         welcomeMsg.textContent = `환영합니다, ${nickname}!`;
 
-        // 3. 1.5초 후 최애 설정 단계로 전환
+        // 3. 무조건 1.5초 후 실행되도록 보장된 타임아웃
         setTimeout(() => {
-            console.log("Onboarding: Transitioning to Step 2 (Character Setup)");
             stepWelcome.style.display = 'none';
+            // 애니메이션 속성 초기화 및 flex 적용
+            step2.style.animation = 'none'; 
             step2.style.display = 'flex';
+            // Reflow 후 페이드인 애니메이션 추가 (오류 방지)
+            void step2.offsetWidth; 
             step2.style.animation = 'fadeIn 0.5s forwards';
         }, 1500);
     };
@@ -218,13 +225,19 @@ function showOnboarding() {
     // Step 1 이벤트 바인딩
     document.getElementById('onboarding-submit').onclick = handleStep1Submit;
     nameInput.onkeydown = (e) => {
-        if (e.key === 'Enter') handleStep1Submit();
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleStep1Submit();
+        }
     };
 
     // Step 2 이벤트 바인딩
     document.getElementById('onboarding-character-submit').onclick = handleStep2Submit;
     charNameInput.onkeydown = (e) => {
-        if (e.key === 'Enter') handleStep2Submit();
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleStep2Submit();
+        }
     };
     
     // 건너뛰기 버튼
