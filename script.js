@@ -140,45 +140,93 @@ function init() {
 
 function showOnboarding() {
     const overlay = document.getElementById('onboarding-overlay');
-    const inputSection = document.getElementById('onboarding-step-input');
-    const welcomeSection = document.getElementById('onboarding-step-welcome');
-    const nameInput = document.getElementById('onboarding-nickname-input');
-    const submitBtn = document.getElementById('onboarding-submit');
-    const welcomeMsg = document.getElementById('onboarding-welcome-msg');
-
-    overlay.style.display = 'flex';
+    const step1 = document.getElementById('onboarding-step-input');
+    const stepWelcome = document.getElementById('onboarding-step-welcome');
+    const step2 = document.getElementById('onboarding-step-character');
     
-    const handleOnboardingSubmit = () => {
+    const nameInput = document.getElementById('onboarding-nickname-input');
+    const welcomeMsg = document.getElementById('onboarding-welcome-msg');
+    
+    const charImg = document.getElementById('onboarding-character-img');
+    const charFile = document.getElementById('onboarding-character-file');
+    const charNameInput = document.getElementById('onboarding-character-name');
+    
+    overlay.style.display = 'flex';
+
+    // 최애 이미지 미리보기
+    charFile.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (rev) => { charImg.src = rev.target.result; };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const finishOnboarding = () => {
+        overlay.classList.add('fade-out');
+        setTimeout(() => {
+            overlay.style.display = 'none';
+            localStorage.setItem('onboarding_complete', 'true');
+        }, 800);
+    };
+
+    const handleStep2Submit = () => {
+        const cName = charNameInput.value.trim();
+        if (!cName) {
+            alert('최애의 이름을 입력해 주세요!');
+            return;
+        }
+        
+        // 첫 번째 프로필(기본 프로필) 업데이트
+        if (state.profiles && state.profiles.length > 0) {
+            state.profiles[0].name = cName;
+            state.profiles[0].image = charImg.src.startsWith('data:') ? charImg.src : 'image/기본프로필.png';
+        }
+        
+        saveState();
+        renderAll();
+        finishOnboarding();
+    };
+
+    const handleStep1Submit = () => {
         const nickname = nameInput.value.trim();
         if (!nickname) {
             alert('이름을 입력해 주세요!');
             return;
         }
 
-        // 1. Save Nickname to State
+        // 1. 유저 닉네임 저장
         state.settings.nickname = nickname;
         saveState();
         renderAll();
 
-        // 2. Transition to Welcome Message
-        inputSection.style.display = 'none';
-        welcomeSection.style.display = 'flex';
+        // 2. 환영 메시지 전환
+        step1.style.display = 'none';
+        stepWelcome.style.display = 'flex';
         welcomeMsg.textContent = `환영합니다, ${nickname}!`;
 
-        // 3. Complete Onboarding and Reveal Main Page
+        // 3. 1.5초 후 최애 설정 단계로 전환
         setTimeout(() => {
-            overlay.classList.add('fade-out');
-            setTimeout(() => {
-                overlay.style.display = 'none';
-                localStorage.setItem('onboarding_complete', 'true');
-            }, 800);
-        }, 2000);
+            stepWelcome.style.display = 'none';
+            step2.style.display = 'flex';
+        }, 1500);
     };
 
-    submitBtn.onclick = handleOnboardingSubmit;
+    // Step 1 이벤트 바인딩
+    document.getElementById('onboarding-submit').onclick = handleStep1Submit;
     nameInput.onkeydown = (e) => {
-        if (e.key === 'Enter') handleOnboardingSubmit();
+        if (e.key === 'Enter') handleStep1Submit();
     };
+
+    // Step 2 이벤트 바인딩
+    document.getElementById('onboarding-character-submit').onclick = handleStep2Submit;
+    charNameInput.onkeydown = (e) => {
+        if (e.key === 'Enter') handleStep2Submit();
+    };
+    
+    // 건너뛰기 버튼
+    document.getElementById('onboarding-skip').onclick = finishOnboarding;
 }
 
 function loadState() {

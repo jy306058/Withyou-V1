@@ -1580,6 +1580,7 @@ input:checked + .slider:before {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    align-items: center;
 }
 
 .onboarding__title {
@@ -1595,6 +1596,7 @@ input:checked + .slider:before {
 }
 
 .onboarding__input {
+    width: 100%;
     text-align: center;
     font-size: 1.2rem;
     padding: 15px;
@@ -1617,6 +1619,101 @@ input:checked + .slider:before {
 }
 
 /* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeInWelcome {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideUp {
+    to { transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+    to { opacity: 0; visibility: hidden; }
+}
+
+/* Onboarding Step 2: Character Setup */
+.onboarding__hint {
+    font-size: 0.8rem;
+    color: var(--text-hint);
+    margin-top: -10px;
+    margin-bottom: 5px;
+    line-height: 1.4;
+    word-break: keep-all;
+    text-align: center;
+}
+
+.onboarding__character-setup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin: 10px 0;
+}
+
+.onboarding__character-preview {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--accent-color);
+    box-shadow: var(--shadow-md);
+    background: var(--bg-color);
+}
+
+.onboarding__character-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.onboarding__image-label {
+    font-size: 0.85rem;
+    color: var(--accent-color);
+    background: var(--accent-soft);
+    padding: 8px 16px;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition-base);
+}
+
+.onboarding__image-label:hover {
+    background: var(--accent-color);
+    color: white;
+}
+
+.onboarding__skip-btn {
+    position: absolute;
+    bottom: 20px;
+    right: 25px;
+    background: none;
+    border: none;
+    color: var(--text-hint);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: color 0.2s;
+    text-decoration: underline;
+    opacity: 0.8;
+}
+
+.onboarding__skip-btn:hover {
+    color: var(--text-secondary);
+    opacity: 1;
+}
+
+.onboarding-overlay.fade-out {
+    animation: fadeOut 0.8s forwards;
+}
+
+/* Cleanup duplicate animation declarations */
+#dummy { display: none; }
+
 @keyframes fadeInWelcome {
     from { opacity: 0; transform: scale(0.9); }
     to { opacity: 1; transform: scale(1); }
