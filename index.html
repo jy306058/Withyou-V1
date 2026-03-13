@@ -144,8 +144,13 @@
                 <h2 class="page__header-title">환경 설정</h2>
                 <button class="page__back-home" onclick="showPage('page-timer')">&lt; 홈으로</button>
             </header>
+            <div class="settings__tabs">
+                <button class="settings__tab-btn settings__tab-btn--active" data-settings-tab="general">일반 설정</button>
+                <button class="settings__tab-btn" data-settings-tab="sound">음성 설정</button>
+            </div>
 
             <div class="settings__container">
+                <div id="settings-panel-general" class="settings__panel settings__panel--active">
                 <section class="settings__section">
                     <div class="form__group">
                         <label for="settings-nickname" class="form__label">나의 닉네임</label>
@@ -208,6 +213,47 @@
 
 
                 </section>
+                </div> <!-- End General Panel -->
+
+                <div id="settings-panel-sound" class="settings__panel" style="display: none;">
+                    <section class="settings__section">
+                        <div class="sound__tabs">
+                            <button class="sound__tab-btn sound__tab-btn--active" data-sound-tab="start">타이머 시작 시</button>
+                            <button class="sound__tab-btn" data-sound-tab="end">타이머 종료 시</button>
+                            <button class="sound__tab-btn" data-sound-tab="popup">팝업 알림창</button>
+                        </div>
+
+                        <div id="sound-options-start" class="sound__options-panel sound__options-panel--active">
+                            <div class="interval__options interval__options--sound">
+                                <label class="interval__option"><input type="radio" name="sound-start" value="차임"> 차임</label>
+                                <label class="interval__option"><input type="radio" name="sound-start" value="풍령"> 풍령</label>
+                                <label class="interval__option"><input type="radio" name="sound-start" value="실로폰"> 실로폰</label>
+                                <label class="interval__option"><input type="radio" name="sound-start" value="none"> 사운드 없음</label>
+                            </div>
+                        </div>
+
+                        <div id="sound-options-end" class="sound__options-panel" style="display: none;">
+                            <div class="interval__options interval__options--sound">
+                                <label class="interval__option"><input type="radio" name="sound-end" value="차임"> 차임</label>
+                                <label class="interval__option"><input type="radio" name="sound-end" value="풍령"> 풍령</label>
+                                <label class="interval__option"><input type="radio" name="sound-end" value="박수"> 박수</label>
+                                <label class="interval__option"><input type="radio" name="sound-end" value="트럼펫"> 트럼펫</label>
+                                <label class="interval__option"><input type="radio" name="sound-end" value="실로폰"> 실로폰</label>
+                                <label class="interval__option"><input type="radio" name="sound-end" value="none"> 사운드 없음</label>
+                            </div>
+                        </div>
+
+                        <div id="sound-options-popup" class="sound__options-panel" style="display: none;">
+                            <div class="interval__options interval__options--sound">
+                                <label class="interval__option"><input type="radio" name="sound-popup" value="뽁"> 뽁</label>
+                                <label class="interval__option"><input type="radio" name="sound-popup" value="휘파람"> 휘파람</label>
+                                <label class="interval__option"><input type="radio" name="sound-popup" value="똑딱"> 똑딱</label>
+                                <label class="interval__option"><input type="radio" name="sound-popup" value="마림바"> 마림바</label>
+                                <label class="interval__option"><input type="radio" name="sound-popup" value="none"> 사운드 없음</label>
+                            </div>
+                        </div>
+                    </section>
+                </div> <!-- End Sound Panel -->
 
                 <div class="settings__actions">
                     <button id="settings-save" class="button button--primary button--large">적용하기</button>

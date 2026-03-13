@@ -11,7 +11,12 @@ let state = {
         nickname: '지윤',
         isRemindEnabled: false,
         remindInterval: 30,
-        remindMessages: []
+        remindMessages: [],
+        sounds: {
+            start: '차임',
+            end: '차임',
+            popup: '뽁'
+        }
     },
     currentProfileIndex: 0,
     profiles: [
@@ -27,6 +32,17 @@ let state = {
     tasks: [],
     activeCategory: 'Work'
 };
+
+let previewAudio = new Audio();
+
+function playCustomSound(type) {
+    if (!state.settings.sounds) return;
+    const soundName = state.settings.sounds[type];
+    if (soundName && soundName !== 'none') {
+        const audio = new Audio(`sound/${soundName}.mp3`);
+        audio.play().catch(e => console.warn("Audio play failed:", e));
+    }
+}
 
 // Mode Constants
 const MODES = {
@@ -101,6 +117,7 @@ function init() {
     if (state.settings.isRemindEnabled === undefined) state.settings.isRemindEnabled = false;
     if (state.settings.remindInterval === undefined) state.settings.remindInterval = 30;
     if (!state.settings.remindMessages) state.settings.remindMessages = [];
+    if (!state.settings.sounds) state.settings.sounds = { start: '차임', end: '차임', popup: '뽁' };
 
     applyTheme(state.settings.theme);
     renderAll();
@@ -322,6 +339,7 @@ function handleTimerEnd() {
 }
 
 function showFinishModal() {
+    playCustomSound('end');
     const profile = state.profiles[state.currentProfileIndex] || state.profiles[0];
     const nickname = state.settings.nickname || '사용자';
     let msg = getRandomMessage(profile, 'msgEnd');
@@ -340,6 +358,7 @@ function showFinishModal() {
 
 // 🔥 최애 프로필 상단 말풍선 리마인드 모달 표시 (자동 닫힘 로직 포함)
 function showRemindModal() {
+    playCustomSound('popup');
     const profile = state.profiles[state.currentProfileIndex] || state.profiles[0];
     const nickname = profile.name || state.settings.nickname || '최애';
     
@@ -382,6 +401,7 @@ function startEngine() {
         const nickname = state.settings.nickname || '사용자';
         const msg = getRandomMessage(profile, 'msgStart');
         document.getElementById('greeting-text').textContent = formatMessage(nickname, msg);
+        playCustomSound('start');
     }
 
     isTimerRunning = true;
@@ -659,7 +679,19 @@ function setupEventListeners() {
     if (navProfiles) navProfiles.onclick = () => window.showPage('page-profiles');
     
     const navSettings = document.getElementById('nav-settings');
-    if (navSettings) navSettings.onclick = () => window.showPage('page-settings');
+    if (navSettings) {
+        navSettings.onclick = () => {
+            window.showPage('page-settings');
+            if (state.settings.sounds) {
+                const sStart = document.querySelector(`input[name="sound-start"][value="${state.settings.sounds.start}"]`);
+                if (sStart) sStart.checked = true;
+                const sEnd = document.querySelector(`input[name="sound-end"][value="${state.settings.sounds.end}"]`);
+                if (sEnd) sEnd.checked = true;
+                const sPopup = document.querySelector(`input[name="sound-popup"][value="${state.settings.sounds.popup}"]`);
+                if (sPopup) sPopup.checked = true;
+            }
+        };
+    }
     
     const navMain = document.getElementById('nav-main');
     if (navMain) navMain.onclick = () => window.showPage('page-timer');
@@ -746,7 +778,8 @@ function setupEventListeners() {
         
         // 🔥 예외 처리 로직 추가 (빈칸이거나 문자를 입력했을 때)
         let remindInterval = 30;
-        const intervalType = document.querySelector('input[name="remind-interval"]:checked').value;
+        const intervalTypeElement = document.querySelector('input[name="remind-interval"]:checked');
+        const intervalType = intervalTypeElement ? intervalTypeElement.value : '30';
         if (intervalType === 'custom') {
             const customVal = parseInt(document.getElementById('settings-remind-custom').value);
             remindInterval = (isNaN(customVal) || customVal <= 0) ? 30 : customVal;
@@ -754,6 +787,14 @@ function setupEventListeners() {
         } else {
             remindInterval = parseInt(intervalType);
         }
+
+        const sStart = document.querySelector('input[name="sound-start"]:checked');
+        const sEnd = document.querySelector('input[name="sound-end"]:checked');
+        const sPopup = document.querySelector('input[name="sound-popup"]:checked');
+        if (!state.settings.sounds) state.settings.sounds = {};
+        if (sStart) state.settings.sounds.start = sStart.value;
+        if (sEnd) state.settings.sounds.end = sEnd.value;
+        if (sPopup) state.settings.sounds.popup = sPopup.value;
 
         if (nickname) state.settings.nickname = nickname;
         state.settings.theme = theme;
@@ -776,6 +817,41 @@ function setupEventListeners() {
         radio.onchange = (e) => {
             document.getElementById('custom-interval-input-area').style.display = (e.target.value === 'custom') ? 'block' : 'none';
         }
+    });
+
+    // Settings Navigation Tabs
+    document.querySelectorAll('[data-settings-tab]').forEach(btn => {
+        btn.onclick = () => {
+            document.querySelectorAll('[data-settings-tab]').forEach(b => b.classList.remove('settings__tab-btn--active'));
+            btn.classList.add('settings__tab-btn--active');
+            document.querySelectorAll('.settings__panel').forEach(p => p.style.display = 'none');
+            const panel = document.getElementById(`settings-panel-${btn.dataset.settingsTab}`);
+            if (panel) panel.style.display = 'block';
+        };
+    });
+
+    // Sound Setup Tabs
+    document.querySelectorAll('[data-sound-tab]').forEach(btn => {
+        btn.onclick = () => {
+            document.querySelectorAll('[data-sound-tab]').forEach(b => b.classList.remove('sound__tab-btn--active'));
+            btn.classList.add('sound__tab-btn--active');
+            document.querySelectorAll('.sound__options-panel').forEach(p => p.style.display = 'none');
+            const panel = document.getElementById(`sound-options-${btn.dataset.soundTab}`);
+            if (panel) panel.style.display = 'block';
+        };
+    });
+
+    // Audio Preview Logic
+    document.querySelectorAll('.interval__options--sound input[type="radio"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            const val = e.target.value;
+            previewAudio.pause();
+            previewAudio.currentTime = 0;
+            if (val !== 'none') {
+                previewAudio.src = `sound/${val}.mp3`;
+                previewAudio.play().catch(err => console.warn('Preview failed:', err));
+            }
+        });
     });
 
     document.getElementById('remind-bubble-close').onclick = closeRemindBubble;
