@@ -37,10 +37,16 @@ let previewAudio = new Audio();
 const buttonAudio = new Audio('sound/버튼.mp3');
 const resetAudio = new Audio('sound/리셋.mp3');
 const clickAudio = new Audio('sound/딱.mp3'); // 추가
+const newClickAudio = new Audio('sound/클릭.mp3'); // 추가
 
 function playClickSound() {
     clickAudio.currentTime = 0;
     clickAudio.play().catch(error => console.log('Click sound play failed:', error));
+}
+
+function playNewClickSound() {
+    newClickAudio.currentTime = 0;
+    newClickAudio.play().catch(error => console.log('New click sound play failed:', error));
 }
 
 function playCustomSound(type) {
@@ -1031,14 +1037,14 @@ function setupEventListeners() {
     // but index.html now uses global showPage directly for GNB to avoid any capture issue.
     const navProfiles = document.getElementById('nav-profiles');
     if (navProfiles) navProfiles.onclick = () => {
-        playClickSound();
+        playNewClickSound();
         window.showPage('page-profiles');
     };
     
     const navSettings = document.getElementById('nav-settings');
     if (navSettings) {
         navSettings.onclick = () => {
-            playClickSound();
+            playNewClickSound();
             window.showPage('page-settings');
             if (state.settings.sounds) {
                 const sStart = document.querySelector(`input[name="sound-start"][value="${state.settings.sounds.start}"]`);
@@ -1053,7 +1059,7 @@ function setupEventListeners() {
     
     const navMain = document.getElementById('nav-main');
     if (navMain) navMain.onclick = () => {
-        playClickSound();
+        playNewClickSound();
         window.showPage('page-timer');
     };
     
@@ -1070,7 +1076,17 @@ function setupEventListeners() {
     };
 
     document.querySelectorAll('.timer__mode-button').forEach(btn => {
-        btn.onclick = () => setMode(btn.dataset.mode);
+        btn.onclick = () => {
+            playNewClickSound();
+            setMode(btn.dataset.mode);
+        };
+    });
+
+    document.querySelectorAll('.page__back-home').forEach(btn => {
+        btn.onclick = () => {
+            playNewClickSound();
+            window.showPage('page-timer');
+        };
     });
 
     document.querySelectorAll('.category__button').forEach(btn => {
@@ -1242,8 +1258,8 @@ function setupEventListeners() {
         timerState.seconds = totalSecs;
         timerState.initialSeconds = totalSecs;
         
-        // 시간 직접 입력 후 확인 시에는 '딱' 소리 재생
-        playClickSound();
+        // 시간 직접 입력 후 확인 시에는 '클릭' 소리 재생
+        playNewClickSound();
         resetEngine();
     };
 
