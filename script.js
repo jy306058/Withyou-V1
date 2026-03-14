@@ -36,8 +36,10 @@ let state = {
 let previewAudio = new Audio();
 const buttonAudio = new Audio('sound/버튼.mp3');
 const resetAudio = new Audio('sound/리셋.mp3');
-const clickAudio = new Audio('sound/딱.mp3'); // 추가
-const newClickAudio = new Audio('sound/클릭.mp3'); // 추가
+const clickAudio = new Audio('sound/딱.mp3'); 
+const newClickAudio = new Audio('sound/클릭.mp3'); 
+// [Audio Unlock] 전역 알람/리마인드 사운드 객체 선언
+const alarmSound = new Audio('sound/클릭.mp3'); 
 
 function playClickSound() {
     clickAudio.currentTime = 0;
@@ -673,6 +675,10 @@ function showFinishModal() {
     finishModal.classList.add('modal--active');
     
     renderConfetti();
+
+    // [Audio Unlock] 타이머 종료 시 알람 재생
+    alarmSound.currentTime = 0;
+    alarmSound.play().catch(e => console.warn("Alarm play failed:", e));
 }
 
 function renderConfetti() {
@@ -760,6 +766,10 @@ function showRemindModal() {
     toastTimeout = setTimeout(() => {
         closeRemindBubble();
     }, 10000);
+
+    // [Audio Unlock] 리마인드 팝업 시 알람 재생
+    alarmSound.currentTime = 0;
+    alarmSound.play().catch(e => console.warn("Remind alarm play failed:", e));
 }
 
 // 🔥 수동 닫기 버튼용 함수
@@ -794,6 +804,14 @@ function startEngine() {
         const msg = getRandomMessage(profile, 'msgStart');
         document.getElementById('greeting-text').textContent = formatMessage(nickname, msg);
         playCustomSound('start');
+
+        // [Audio Unlock] 사용자의 '시작' 버튼 클릭 시점에 오디오 잠금 해제
+        alarmSound.play().then(() => {
+            alarmSound.pause();
+            alarmSound.currentTime = 0;
+        }).catch(e => {
+            console.log("Audio context unlock failed:", e);
+        });
     }
 
     isTimerRunning = true;
