@@ -8,7 +8,7 @@ const STORAGE_KEY = 'sweet_you_data';
 let state = {
     settings: {
         theme: 'theme-light',
-        nickname: '지윤',
+        nickname: '',
         isRemindEnabled: false,
         remindInterval: 30,
         remindMessages: [],
@@ -21,7 +21,7 @@ let state = {
     currentProfileIndex: 0,
     profiles: [
         {
-            name: '지윤',
+            name: '',
             image: 'image/기본프로필.png', 
             msgIdle: ['우리 같이 집중해 볼까요?'],
             msgStart: ['오늘도 집중해서 잘해보자!'],
@@ -105,7 +105,7 @@ function init() {
     if (!state.settings) state.settings = {};
     if (!state.profiles || state.profiles.length === 0) {
         state.profiles = [{
-            name: '지윤',
+            name: '',
             image: '', 
             msgIdle: ['우리 같이 집중해 볼까요? 💙'],
             msgStart: ['오늘도 집중해서 잘해보자!'],
@@ -208,14 +208,23 @@ function showOnboarding() {
     };
 
     const handleStep2Skip = () => {
-        // 건너뛰기 시 기본값도 사용할 수 있도록 이름만 보장
-        if (!state.profiles[0].name) state.profiles[0].name = '지윤';
+        const cName = charNameInput.value.trim();
+        if (!cName) {
+            alert('최애의 이름을 입력해 주세요!');
+            return;
+        }
+        
+        if (state.profiles && state.profiles.length > 0) {
+            state.profiles[0].name = cName;
+            // 이미지는 기본값 유지
+        }
+        
         saveState();
         showBridgeScreen();
     };
 
     const showBridgeScreen = () => {
-        const charName = state.profiles[0].name || '지윤';
+        const charName = state.profiles[0].name || '최애';
         bridgeTitle.textContent = `${charName}이/가 나의 메이트라면?`;
         step2.style.display = 'none';
         
@@ -237,7 +246,7 @@ function showOnboarding() {
     let currentQuizStep = 0;
 
     const showQuizStep = () => {
-        const charName = state.profiles[0].name || '지윤';
+        const charName = state.profiles[0].name || '최애';
         quizQuestion.textContent = `${currentQuizStep + 1}. ${quizQuestions[currentQuizStep](charName)}`;
         quizInput.value = ''; // 입력란 초기화
         
@@ -258,6 +267,15 @@ function showOnboarding() {
             state.profiles[0][quizKeys[currentQuizStep]] = [val];
         }
         
+        currentQuizStep++;
+        if (currentQuizStep >= quizQuestions.length) {
+            showResultScreen();
+        } else {
+            showQuizStep();
+        }
+    };
+    
+    const handleQuizSkip = () => {
         currentQuizStep++;
         if (currentQuizStep >= quizQuestions.length) {
             showResultScreen();
@@ -340,6 +358,7 @@ function showOnboarding() {
     document.getElementById('onboarding-bridge-submit').onclick = showQuizStep;
     
     document.getElementById('onboarding-quiz-submit').onclick = handleQuizSubmit;
+    document.getElementById('onboarding-quiz-skip').onclick = handleQuizSkip;
     quizInput.onkeydown = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
