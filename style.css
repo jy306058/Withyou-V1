@@ -1959,8 +1959,10 @@ input:checked + .slider:before {
 ========================================================= */
 
 /* 1. GNB 아래 여백 절대 보장 (모든 기기 공통, 미디어 쿼리 무시) */
-html body .app__main #tab-home .timer__section {
-    margin-top: 60px !important; /* 팝업창 사진 위로 시원하게 40px 확보! */
+html body .app__main #tab-home .timer__section,
+html body .app__main #tab-todo .checklist,
+html body .app__main #tab-record .record__container {
+    margin-top: 40px !important; /* 팝업창 사진 위로 시원하게 40px 확보! */
 }
 
 /* 2. 팝업창 무조건 최상단 배치 및 위치 조정 */
@@ -1972,7 +1974,9 @@ html body #remind-bubble.remind-bubble--active {
 
 /* 3. 모바일 환경(380px 이하) 강제 교정 덮어쓰기 */
 @media (max-width: 380px) {
-    html body .app__main #tab-home .timer__section {
+    html body .app__main #tab-home .timer__section,
+    html body .app__main #tab-todo .checklist,
+    html body .app__main #tab-record .record__container {
         margin-top: 50px !important; /* 좁은 폰에서도 최소 50px 보장 */
     }
 }
