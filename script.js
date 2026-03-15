@@ -944,7 +944,13 @@ function renderChecklist() {
         return t.category === state.activeCategory;
     });
 
-    filteredTasks.forEach((task) => {
+    // --- SORTING: Uncompleted first, then Completed ---
+    const sortedTasks = [...filteredTasks].sort((a, b) => {
+        if (a.completed === b.completed) return 0;
+        return a.completed ? 1 : -1;
+    });
+
+    sortedTasks.forEach((task) => {
         const li = document.createElement('li');
         li.className = `todo__item ${task.completed ? 'todo__item--completed' : ''}`;
         

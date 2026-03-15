@@ -1853,7 +1853,8 @@ input:checked + .slider:before {
 }
 /* 프로필 관리 & 환경설정 헤더 밑 간격 시원하게 띄우기 */
 .page__header {
-    margin-bottom: 50px !important; 
+    margin-bottom: 50px !important;
+    padding-bottom: 0 !important; /* Reset any legacy padding */
 }
 /* =========================================================
    🔥 방어막 코드 (디자인 훼손 X, 렉 X)
@@ -1884,10 +1885,12 @@ input:checked + .slider:before {
     .timer__container, 
     .checklist,
     .profile__grid,
-    .settings__container {
+    .settings__container,
+    .record__container {
         max-width: 600px !important;
         margin-left: auto !important;
         margin-right: auto !important;
+        padding-bottom: 80px !important;
     }
 }
 
